@@ -188,6 +188,13 @@ void loop() {
             int pwm = map(fanPorcentaje, 0, 100, 0, 255);
             ledcWrite(FAN_CHANNEL, pwm);
             resetGasArrays();
+            state_A = IDLE;
+            state_B = IDLE;
+            state_C = IDLE;
+
+            measureStart_A = 0;
+            measureStart_B = 0;
+            measureStart_C = 0;
             ultimoSegundoEnviado = -1; // Reset del control de tiempo
             Serial.println("INICIO");
           }
@@ -262,6 +269,13 @@ void loop() {
     Serial.println("FIN");
     corriendo = false; pasoConfig = 0;
     resetGasArrays();
+    state_A = IDLE;
+    state_B = IDLE;
+    state_C = IDLE;
+
+    measureStart_A = 0;
+    measureStart_B = 0;
+    measureStart_C = 0;
     ledcWrite(FAN_CHANNEL, 0);
   }
 
@@ -270,6 +284,15 @@ void loop() {
   if (Serial.available()) {
     String cmd = Serial.readStringUntil('\n'); cmd.trim();
     if (cmd.equalsIgnoreCase("STOP")) {
+      resetGasArrays();
+
+      state_A = IDLE;
+      state_B = IDLE;
+      state_C = IDLE;
+
+      measureStart_A = 0;
+      measureStart_B = 0;
+      measureStart_C = 0;
       Serial.println("STOPPED");
       corriendo = false; pasoConfig = 0;
       resetGasArrays();
