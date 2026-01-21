@@ -81,7 +81,6 @@ def estadisticas(data):
         "min": float(np.min(data)),
         "max": float(np.max(data))
     }
-import matplotlib.pyplot as plt
 
 def actualizar_grafico_progreso(tiempo_transcurrido, tiempo_total, fase_nombre):
     """
@@ -203,6 +202,7 @@ def ejecutar_ensayo(ser):
 
         else:
             input(f"Presiona ENTER para iniciar la fase '{fase['nombre']}'... ")
+        ser.reset_input_buffer()
         ser.write(b"ENTER\n")
 
         print(f"⏳ Medición en curso en fase '{fase['nombre']}'... (pulsa S para STOP)")
