@@ -1,10 +1,10 @@
 # SmartNose  
-### Nariz Electrónica para la Estimación de la Calidad del Aceite de Oliva Virgen (Metodologías de Machine Learning)
+### Nariz Electrónica para la Estimación de la Calidad del Aceite de Oliva (Metodologías de Machine Learning)
 
-Este repositorio alberga el proyecto de investigación **SmartNose**, un prototipo de nariz electrónica diseñado para la **estimación de la calidad del Aceite de Oliva Virgen (AOVE)** y la **detección del estado de las aceitunas** mediante la medición de gases volátiles.
+Este repositorio alberga el proyecto de investigación **SmartNose**, un prototipo de nariz electrónica diseñado para la **estimación de la calidad del Aceite de Oliva** mediante la medición de gases volátiles.
 
-El sistema utiliza sensores **BME688** y metodologías de **Machine Learning (ML)** para el análisis.  
-Sus potenciales aplicaciones incluyen la detección de **contaminaciones químicas** en muestras de suelo u otros productos.
+El sistema utiliza sensores **BME688** y metodologías de **Machine Learning** para el análisis.  
+Sus aplicaciones potenciales abarcan cualquier caso de investigación que requiera analizar y comparar perfiles volátiles en una amplia variedad de muestras, tanto dentro como fuera del sector oleícola.
 
 ---
 
@@ -19,7 +19,7 @@ La Wiki contiene todos los pasos necesarios para la puesta en marcha del softwar
 
 - **Instalación del software:** Guía para instalar el **Arduino IDE** (con soporte para ESP32 y las librerías necesarias) y **Python** (incluyendo las dependencias mediante `pip`).  
 - **Montaje del hardware:** Lista de materiales, diagrama de conexión y tabla de pines.  
-- **Flujo de comunicación:** Explicación detallada de cómo interactúan el firmware del **ESP32** (`SN.ino`) y el script de **Python** (`SmartNose.py`).
+- **Flujo de comunicación:** Explicación detallada de cómo interactúan el firmware del **ESP32** (`SN_HP.ino`) y el script de **Python** (`SN_Python_Adq_HP.py`).
 
 ---
 
@@ -56,7 +56,7 @@ Se recomienda leer el apartado **4.1: Flujo de Comunicación** en la Wiki para c
 
 - **Recipientes:** Para aceites, se recomienda usar platos Petri de **50 mm de diámetro**, preferiblemente de cristal (o plástico).  
 - **Limpieza:** Los platos Petri utilizados con aceite deben limpiarse rigurosamente:  
-  primero con papel, luego con jabón y agua, y finalmente con alcohol (solo cuando la SmartNose no esté en uso).  
+  primero con papel, luego con jabón y agua, secar de nuevo con papel y dejarlos al aire para eliminar posibles restos volátiles.
 - **Plástico:** Evita reutilizar platos Petri de plástico muchas veces, ya que pueden retener compuestos y alterar futuras mediciones.  
 - **Dosificación y volumen:** Usa una **jeringa graduada en mililitros (ml)** para controlar el volumen de la muestra. Límpiala adecuadamente si se va a reutilizar.  
 - **Aumento de superficie:** Se recomienda usar **dos platos Petri de 50 mm** con **5 ml en cada uno** (10 ml total) para aumentar la superficie de emisión de gases.  
@@ -67,30 +67,27 @@ Se recomienda leer el apartado **4.1: Flujo de Comunicación** en la Wiki para c
 
 ### 3.2 Consejos para la Medición
 
-- **Inicialización (30 minutos):** Antes de cualquier ensayo, inicializa los sensores durante **30 minutos** con la cámara abierta y el ventilador encendido.  
-  Esta fase proporciona datos de referencia de las condiciones ambientales.  
-- **Fase de ventilación:** Realiza siempre un ensayo de ventilación entre mediciones con muestras (`Muestra: No`, `Cámara: abierta`, `Ventilador: 100%`).  Esto limpia residuos de gases y restablece la línea base.  
-- **Cámara cerrada y ventilador apagado:** Durante la medición, asegúrate de que la cámara esté cerrada y el ventilador apagado (`Velocidad: 0%`).  El movimiento de aire puede alterar los resultados.  
-- **Tiempo de saturación:** Se recomienda un tiempo de medición entre **10 y 30 minutos** para permitir la reacción completa de los sensores a los gases emitidos.
-
+- **Fase de Ventilación (Fase 0 - Automática):** El script integra una fase inicial de purga obligatoria antes de medir cada muestra, configurando el ventilador al 100% por defecto. **Para el primer ensayo del día, se recomienda configurar una duración de 30 minutos** para que los sensores alcancen su temperatura de trabajo y estabilicen su línea base. Para los ensayos consecutivos, bastará con tiempos más cortos para limpiar residuos de gases. Asegúrate físicamente de que **la cámara y el obturador estén abiertos** cuando la consola te lo indique.
+- **Fase de Medición (Fase 1 - Automática):** Para la toma de datos, el programa apaga automáticamente el ventilador (0%) para evitar que el flujo de aire altere los resultados. Cuando aparezca el aviso por pantalla, introduce la muestra y asegúrate de **cerrar herméticamente la cámara y los obturadores** antes de presionar ENTER.
+- **Tiempo de saturación:** Para la fase de medición, se recomienda configurar una duración de entre **10 y 30 minutos**. Este tiempo permite la acumulación de los gases volátiles emitidos por la muestra en la cámara cerrada, garantizando la reacción completa de los sensores.
 ---
 
 ## Estructura del Repositorio
 
-| Carpeta / Archivo       | Descripción |
+| Carpeta / Archivo        | Descripción |
 |--------------------------|-------------|
 | `ACOND/`                 | Contiene el código de acondicionamiento de sensores (`ACOND.ino`). |
 | `SmartNose.codes.1/`     | Incluye el firmware principal (`SN.ino`) y el script de Python (`SmartNose.py`) correspondientes a la versión 1 del proyecto. |
-| `SN.Docs/`               | Carpeta que contiene los siguientes archivos: |
-| ├── `SN.Slides.pdf`      | Diapositivas con la explicación del diseño del prototipo y los resultados obtenidos. |
-| ├── `BME688.Datasheet.pdf` | Documento técnico del sensor BME688. |
-| ├── `ACEITES.PERÚ.xlsx`  | Archivo Excel con los datos brutos (*raw data*) y resumen de los ensayos con aceites de Perú y el análisis de separabilidad de las muestras. |
+| `SmartNose.codes.2/`     | Versión actualizada con configuración de **perfiles térmicos**. Incluye el firmware (`SN_HP.ino`) y dos scripts de Python: <br><br> 🔹 `SN_Python_Adq_HP.py`: Script para la adquisición de datos y configuración de los ensayos con fases automáticas de ventilación y medición. <br> 🔹 `SN_Python_Analisis_HP.py`: Script de procesamiento y análisis masivo de datos. Lee múltiples archivos CSV, realiza control de calidad (filtrando señales anómalas por correlación), normaliza y promedia repeticiones para generar curvas maestras. Extrae un vector de 120 parámetros característicos por muestra (4 parámetros x 30 variables) para realizar análisis de Componentes Principales (PCA), cálculo de distancias euclídeas y evaluación de la importancia/carga de cada variable. |
+| `SN.Docs/`               | Carpeta que contiene la documentación técnica y académica del proyecto: |
+| ├── `TFG_MEMORIA.pdf`    | Memoria completa del TFG que incluye el desarrollo de hardware y software, resultados experimentales, análisis económico y planos del diseño mecánico. |
+| ├── `TFG-DEFENSA.pdf`    | Presentación de la defensa del TFG (sirve como un resumen visual del proyecto). |
+| ├── `SN.Slides-06.11.25.pdf` | Diapositivas con la explicación del diseño del prototipo y los resultados obtenidos en fases previas. |
+| ├── `BME688.Datasheet.pdf` | Documento técnico oficial del sensor BME688. |
+| ├── `ACEITES.PERÚ.xlsx`  | Archivo Excel con los datos brutos (*raw data*) y el análisis de separabilidad de muestras con aceites de Perú. |
+| ├── `Informe_Analisis_CE8/` | Carpeta con el informe en Excel del Caso de Estudio 8 (desarrollado en la memoria) e imágenes de los gráficos generados en dicho análisis. |
 | `LICENSE`                | Contrato de licencia para el uso del código (Licencia MIT). |
-| `README.md`              | Documento de introducción y guía principal del repositorio. |
-
----
-
-## Autor y Contacto
+| `README.md`              | Documento de introducción y guía principal del repositorio. |## Autor y Contacto
 
 **Desarrollado por:** Paula Molina Gómez  
 **Versión actual:** v1.0.1  
